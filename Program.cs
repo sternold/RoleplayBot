@@ -6,7 +6,10 @@ namespace ConsoleApplication
     {
         public static void Main(string[] args)
         {
-            Console.WriteLine("Hello Doom!");
+            //this is placeholder code until we start working on this.
+            while(true){
+                new Object();
+            }
         }
     }
 }
