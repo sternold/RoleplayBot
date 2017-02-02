@@ -62,7 +62,6 @@ namespace RoleplayBot
 
                         if (!modifierMatch.Equals(Match.Empty))
                         {
-                            Console.Write("Here!");
                             String sign = new Regex("(-|\\+)").Match(arguments).ToString();
                             if (sign.Equals("-"))
                             {
@@ -74,7 +73,7 @@ namespace RoleplayBot
                         {
                             modifier *= -1;
                         }
-                        
+
                         int total = 0;
                         Random random = new Random();
 
