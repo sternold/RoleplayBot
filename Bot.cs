@@ -1,5 +1,4 @@
 using Discord;
-using Newtonsoft.Json;
 using System;
 using System.Text.RegularExpressions;
 
@@ -20,13 +19,13 @@ namespace RoleplayBot
 
             client.MessageReceived += async (sender, eventargs) =>
             {
-                if (!eventargs.Message.IsAuthor && eventargs.Message.Text[0] == '!')
+                if (!eventargs.Message.IsAuthor && eventargs.Message.Text.Split(' ')[0] == "!roll")
                 {
-                    await eventargs.Channel.SendTTSMessage("Hello!");
-                } 
+                    await eventargs.Channel.SendMessage("You rolled a " + new Random().Next(1,20));
+                }
             };
 
-            client.ExecuteAndWait(async () => await client.Connect(null, TokenType.Bot));
+            client.ExecuteAndWait(async () => await client.Connect(null , TokenType.Bot));
         }
     }
 }
