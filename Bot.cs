@@ -11,7 +11,7 @@ namespace RoleplayBot
 
         public Bot(string token)
         {
-
+            this.token = token;
         }
 
         public void Run()
@@ -55,17 +55,47 @@ namespace RoleplayBot
                     }
                     else
                     {
+                        regex = new Regex("(-|\\+)\\d+");
+                        Match modifierMatch = regex.Match(arguments);
+                        int modifier = 0;
+                        bool positiveModifier = true;
+
+                        if (!modifierMatch.Equals(Match.Empty))
+                        {
+                            Console.Write("Here!");
+                            String sign = new Regex("(-|\\+)").Match(arguments).ToString();
+                            if (sign.Equals("-"))
+                            {
+                                positiveModifier = false;
+                            }
+                            modifier = Int32.Parse(new Regex("\\d+").Matches(arguments)[2].ToString());
+                        }
+                        if (!positiveModifier)
+                        {
+                            modifier *= -1;
+                        }
+                        
                         int total = 0;
                         Random random = new Random();
 
-                        for (int i = 0; i < dice; i++)
+                        for (int i = 0; i < dice - 1; i++)
                         {
                             int newRoll = random.Next(1, capacity);
                             total += newRoll;
                             message += newRoll + " ";
                         }
 
+                        int lastRoll = random.Next(1, capacity);
+                        total += lastRoll;
+                        message += lastRoll;
+                        total += modifier;
+
                         message += "; Total: " + total;
+
+                        
+                        if (modifier != 0) {
+                            message += " (with modifier " + modifier + ")";
+                        }
                     }
                 }
                 else
