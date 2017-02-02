@@ -11,7 +11,7 @@ namespace RoleplayBot
 
         public Bot(string token)
         {
-
+            this.token = token;
         }
 
         public void Run()
