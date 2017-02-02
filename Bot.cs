@@ -24,7 +24,7 @@ namespace RoleplayBot
                 }
             };
 
-            client.ExecuteAndWait(async () => await client.Connect("Mjc2NjcwMjM3MDk5OTUwMDgw.C3Sk4Q.iEpalukaB0GoBqluvQANbx_E1aY", TokenType.Bot));
+            client.ExecuteAndWait(async () => await client.Connect(null , TokenType.Bot));
         }
     }
 }
