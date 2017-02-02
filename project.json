@@ -6,7 +6,8 @@
   },
   "dependencies": {
     "Newtonsoft.Json": "9.0.1",
-    "Discord.Net": "0.9.6"
+    "Discord.Net": "0.9.6",
+    "System.Text.RegularExpressions": "4.3.0"
   },
   "frameworks": {
     "netcoreapp1.1": {

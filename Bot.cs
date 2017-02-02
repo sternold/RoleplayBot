@@ -1,6 +1,7 @@
 using Discord;
 using Newtonsoft.Json;
 using System;
+using System.Text.RegularExpressions;
 
 namespace RoleplayBot
 {
@@ -22,8 +23,7 @@ namespace RoleplayBot
                 if (!eventargs.Message.IsAuthor && eventargs.Message.Text[0] == '!')
                 {
                     await eventargs.Channel.SendTTSMessage("Hello!");
-                }
-
+                } 
             };
 
             client.ExecuteAndWait(async () => await client.Connect(null, TokenType.Bot));
