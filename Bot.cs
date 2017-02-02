@@ -6,10 +6,11 @@ namespace RoleplayBot
     public class Bot
     {
         private DiscordClient client;
+        private string token = null;
 
-        public Bot()
+        public Bot(string token)
         {
-
+            this.token = token;
         }
 
         public void Run()
@@ -24,7 +25,7 @@ namespace RoleplayBot
                 }
             };
 
-            client.ExecuteAndWait(async () => await client.Connect("Mjc2NjcwMjM3MDk5OTUwMDgw.C3Sk4Q.iEpalukaB0GoBqluvQANbx_E1aY", TokenType.Bot));
+            client.ExecuteAndWait(async () => await client.Connect(token, TokenType.Bot));
         }
     }
 }

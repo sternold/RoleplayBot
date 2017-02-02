@@ -2,3 +2,4 @@
 /obj
 .vscode
 project.lock.json
+config.xml
