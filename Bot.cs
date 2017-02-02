@@ -13,11 +13,20 @@ namespace RoleplayBot
 
         }
 
-        internal void Run()
+        public void Run()
         {
             client = new DiscordClient();
-            client.ExecuteAndWait(async () => await client.Connect(null /*TODO: Token*/, TokenType.Bot));
-        }
 
+            client.MessageReceived += async (sender, eventargs) =>
+            {
+                if (!eventargs.Message.IsAuthor && eventargs.Message.Text[0] == '!')
+                {
+                    await eventargs.Channel.SendTTSMessage("Hello!");
+                }
+
+            };
+
+            client.ExecuteAndWait(async () => await client.Connect(null, TokenType.Bot));
+        }
     }
 }
