@@ -1,10 +1,11 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using RoleplayBot.Models;
 
 namespace RoleplayBot.Persistence
 {
-    public class CharacterDatastore : DatastoreBase, IRepository<Character>
+    public class CharacterDatastore : DatastoreBase<Character>, IRepository<Character>
     {
         public void Create(Character entity)
         {
