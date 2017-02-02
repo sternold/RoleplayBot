@@ -6,27 +6,27 @@ using RoleplayBot.Models;
 
 namespace RoleplayBot.Persistence
 {
-    public class CharacterController
+    public static class CharacterController
     {
 
-        public void AddCharacter(string name)
+        public static void AddCharacter(string name)
         {
-
+            throw new NotImplementedException();
         }
 
-        public void AddAttributeToCharacter(string name, string attribute, int value)
+        public static void AddAttributeToCharacter(string name, string attribute, int value)
         {
-
+            throw new NotImplementedException();
         }
 
-        public int GetAttributeValue(string name, string attribute)
+        public static int GetAttributeValue(string name, string attribute)
         {
-            
+            throw new NotImplementedException();
         }
 
-        public Character GetCharacterByName(string name)
+        public static Character GetCharacterByName(string name)
         {
-            
+            throw new NotImplementedException();
         }
     }
 }

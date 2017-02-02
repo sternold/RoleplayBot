@@ -7,6 +7,11 @@ namespace RoleplayBot.Persistence
 {
     public class CharacterDatastore : DatastoreBase<Character>, IRepository<Character>
     {
+        public CharacterDatastore()
+        {
+            Name = "Characters.json";
+        }
+
         public void Create(Character entity)
         {
             throw new NotImplementedException();
