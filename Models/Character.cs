@@ -30,7 +30,8 @@ namespace RoleplayBot.Models
         /// <returns>If the attribute exists, it's value. Otherwise, 0.</returns>
         public int GetAttribute(string name)
         {
-            if(Attributes.TryGetValue(name, out int value))
+            int value = 0;
+            if(Attributes.TryGetValue(name, out value))
             {
                 return value;
             }
