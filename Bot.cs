@@ -1,6 +1,7 @@
 using Discord;
 using System;
 using System.Text.RegularExpressions;
+using RoleplayBot.Persistence;
 
 namespace RoleplayBot
 {
@@ -20,10 +21,24 @@ namespace RoleplayBot
 
             client.MessageReceived += async (sender, eventargs) =>
             {
-                if (!eventargs.Message.IsAuthor && eventargs.Message.Text.Split(' ')[0] == "!roll")
+                if (!eventargs.Message.IsAuthor)
                 {
                     String[] splitString = eventargs.Message.Text.Split(' ');
-                    await eventargs.Channel.SendMessage(executeRoll(splitString));
+                    switch(eventargs.Message.Text.Split(' ')[0])
+                    {
+                        case "!roll":
+                            await eventargs.Channel.SendMessage(executeRoll(splitString));
+                            break;
+                        case "!char":
+                            CharacterController.AddCharacter(splitString[1]);
+                            if(CharacterController.GetCharacterByName(splitString[1]) != null)
+                            {
+                                await eventargs.Channel.SendMessage("Character " + splitString[1] + " created!");
+                            } 
+                            break;
+                    }
+                    
+                    
                 }
             };
 
