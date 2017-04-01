@@ -12,15 +12,15 @@ namespace RoleplayBot.Models
             Attributes = new Dictionary<string, int?>();
         }
 
-        public void putAttribute(string key, int? value)
+        public void SetAttribute(string name, int? value)
         {
-            Attributes.Add(key, value);
+            Attributes.Add(name, value);
         }
 
-        public int? getAttribute(string key)
+        public int? GetAttribute(string name)
         {
             int? value = null;
-            Attributes.TryGetValue(key, out value);
+            Attributes.TryGetValue(name, out value);
             return value;
         }
     }

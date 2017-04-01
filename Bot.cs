@@ -35,7 +35,7 @@ namespace RoleplayBot
             String message = "You rolled: ";
             if (splitString.Length == 1)
             {
-                message = message + new Random().Next(1, 20);
+                message = message + new Random().Next(1, 21);
             }
             else if (splitString.Length > 1)
             {
@@ -47,7 +47,7 @@ namespace RoleplayBot
                 {
                     String substring = match.ToString();
                     int dice = Int32.Parse(new Regex("\\d+").Matches(substring)[0].ToString());
-                    int capacity = Int32.Parse(new Regex("\\d+").Matches(substring)[1].ToString());
+                    int capacity = Int32.Parse(new Regex("\\d+").Matches(substring)[1].ToString()) + 1;
 
                     if (dice > 500 || capacity > 1000)
                     {

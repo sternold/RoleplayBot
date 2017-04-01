@@ -5,7 +5,7 @@ namespace RoleplayBot
 {
     public class Config
     {
-        private string filename = null;
+        private string filename;
         public Config(string filename)
         {
             this.filename = filename;
