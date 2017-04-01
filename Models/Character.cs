@@ -5,23 +5,36 @@ namespace RoleplayBot.Models
     public class Character
     {
         public string Name { get; set; }
-        private Dictionary<string, int?> Attributes { get; set; }
+        private Dictionary<string, int> Attributes { get; set; }
 
-        public Character()
+        public Character(string name)
         {
-            Attributes = new Dictionary<string, int?>();
+	        Name = name;
+            Attributes = new Dictionary<string, int>();
         }
 
-        public void SetAttribute(string name, int? value)
+		/// <summary>
+		/// Sets an attribute for the character.
+		/// </summary>
+		/// <param name="name">Name/Key of the attribute.</param>
+		/// <param name="value">Value of the attribute.</param>
+        public void SetAttribute(string name, int value)
         {
             Attributes.Add(name, value);
         }
 
-        public int? GetAttribute(string name)
+        /// <summary>
+		/// Gets an attribute from the character.
+		/// </summary>
+		/// <param name="name"></param>
+        /// <returns>If the attribute exists, it's value. Otherwise, 0.</returns>
+        public int GetAttribute(string name)
         {
-            int? value = null;
-            Attributes.TryGetValue(name, out value);
-            return value;
+            if(Attributes.TryGetValue(name, out int value))
+            {
+                return value;
+            }
+            return 0;
         }
     }
 }
