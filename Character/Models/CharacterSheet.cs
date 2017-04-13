@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 
-namespace RoleplayBot.Models
+namespace RoleplayBot.Character.Models
 {
-    public class Character
+    public class Charactersheet
     {
         public string Name { get; set; }
         private Dictionary<string, int> Attributes { get; set; }
 
-        public Character(string name)
+        public Charactersheet(string name)
         {
 	        Name = name;
             Attributes = new Dictionary<string, int>();

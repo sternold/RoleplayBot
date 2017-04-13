@@ -3,13 +3,16 @@ using System.IO;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace RoleplayBot.Persistence
+namespace RoleplayBot.Character.Persistence
 {
-    public abstract class DatastoreBase<T>
+    public abstract class DatastoreBase<T> : ICRUD<T>
     {
         protected string Name { get; set; }
         List<T> items = new List<T>();
 
+        /// <summary>
+        /// Create a new datastore. Name is required.
+        /// </summary>
         public void Initialize()
         {
             if(!File.Exists(Name))
@@ -21,6 +24,9 @@ namespace RoleplayBot.Persistence
             }
         }
 
+        /// <summary>
+        /// Load objects from the datastore.
+        /// </summary>
         public void Load()
         {
             string json = null;
@@ -32,13 +38,13 @@ namespace RoleplayBot.Persistence
             items = JsonConvert.DeserializeObject<List<T>>(json);
         }
 
+        /// <summary>
+        /// Save the current objects to the datastore.
+        /// </summary>
         public void Commit()
         {
             File.Delete(Name);
-            using(File.CreateText(Name))
-            {
-
-            }
+            File.CreateText(Name).Dispose();
             string json = JsonConvert.SerializeObject(items);
 
             using(var writer = new StreamWriter(File.Open(Name, FileMode.Open)))
@@ -47,5 +53,11 @@ namespace RoleplayBot.Persistence
                 writer.Flush();
             }
         }
+
+        public abstract void Create(T entity);
+        public abstract IEnumerable<T> Read();
+        public abstract T Read(int id);
+        public abstract void Update(T entity);
+        public abstract void Delete(int id);
     }
 }

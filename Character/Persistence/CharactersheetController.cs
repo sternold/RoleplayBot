@@ -2,19 +2,19 @@ using System;
 using System.IO;
 using System.Collections.Generic;
 using Newtonsoft.Json;
-using RoleplayBot.Models;
+using RoleplayBot.Character.Models;
 
-namespace RoleplayBot.Persistence
+namespace RoleplayBot.Character.Persistence
 {
-    public static class CharacterController
+    public static class CharactersheetController
     {
 
-        public static void AddCharacter(string name)
+        public static bool AddCharactersheet(string name)
         {
             throw new NotImplementedException();
         }
 
-        public static void AddAttributeToCharacter(string name, string attribute, int value)
+        public static void AddAttributeToCharactersheet(string name, string attribute, int value)
         {
             throw new NotImplementedException();
         }
@@ -24,7 +24,7 @@ namespace RoleplayBot.Persistence
             throw new NotImplementedException();
         }
 
-        public static Character GetCharacterByName(string name)
+        public static Charactersheet GetCharactersheetByName(string name)
         {
             throw new NotImplementedException();
         }

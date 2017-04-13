@@ -1,20 +1,27 @@
 using Discord;
 using System;
 using System.Text.RegularExpressions;
-using RoleplayBot.Persistence;
+using RoleplayBot.Character.Persistence;
 
-namespace RoleplayBot
+namespace RoleplayBot.Bot
 {
-    public class Bot
+    public class DiscordBot
     {
         private DiscordClient client;
         private string token = null;
 
-        public Bot(string token)
+        /// <summary>
+        /// RPB's main parsing class.
+        /// </summary>
+        /// <param name="token">The token recieved from Discord</param>
+        public DiscordBot(string token)
         {
             this.token = token;
         }
 
+        /// <summary>
+        /// Start listening to messages on discord.
+        /// </summary>
         public void Run()
         {
             client = new DiscordClient();
@@ -23,31 +30,41 @@ namespace RoleplayBot
             {
                 if (!eventargs.Message.IsAuthor)
                 {
-                    String[] splitString = eventargs.Message.Text.Split(' ');
-                    switch(eventargs.Message.Text.Split(' ')[0])
-                    {
-                        case "!roll":
-                            await eventargs.Channel.SendMessage(executeRoll(splitString));
-                            break;
-                        case "!char":
-                            CharacterController.AddCharacter(splitString[1]);
-                            if(CharacterController.GetCharacterByName(splitString[1]) != null)
-                            {
-                                await eventargs.Channel.SendMessage("Character " + splitString[1] + " created!");
-                            } 
-                            break;
-                    }
-                    
-                    
+                    Console.WriteLine("Recieved: " + eventargs.Message.Text);
+                    ParseQuery(eventargs);
                 }
             };
 
             client.ExecuteAndWait(async () => await client.Connect(token, TokenType.Bot));
         }
 
-        private String executeRoll(String[] splitString)
+        public async void ParseQuery(MessageEventArgs eventargs)
         {
-            String message = "You rolled: ";
+            string[] args = eventargs.Message.Text.Split(' ');
+
+            switch (args[0].ToLower())
+            {
+                case "!roll":
+                    var roll = GenerateRollString(args);
+                    await eventargs.Channel.SendMessage(roll);
+                    break;
+                case "!char":
+                    if (CharactersheetController.AddCharactersheet(args[1]))
+                    {
+                        await eventargs.Channel.SendMessage("Character " + args[1] + " created!");
+                    }
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Parses a "!roll" query.
+        /// </summary>
+        /// <param name="splitString">An unparsed message.</param>
+        /// <returns></returns>
+        private string GenerateRollString(string[] splitString)
+        {
+            string message = "You rolled: ";
             if (splitString.Length == 1)
             {
                 message = message + new Random().Next(1, 21);
@@ -55,12 +72,12 @@ namespace RoleplayBot
             else if (splitString.Length > 1)
             {
                 Regex regex = new Regex("\\d+d\\d+");
-                String arguments = splitString[1].Trim();
+                string arguments = splitString[1].Trim();
                 Match match = regex.Match(arguments);
 
                 if (!match.Equals(Match.Empty))
                 {
-                    String substring = match.ToString();
+                    string substring = match.ToString();
                     int dice = Int32.Parse(new Regex("\\d+").Matches(substring)[0].ToString());
                     int capacity = Int32.Parse(new Regex("\\d+").Matches(substring)[1].ToString()) + 1;
 
@@ -77,7 +94,7 @@ namespace RoleplayBot
 
                         if (!modifierMatch.Equals(Match.Empty))
                         {
-                            String sign = new Regex("(-|\\+)").Match(arguments).ToString();
+                            string sign = new Regex("(-|\\+)").Match(arguments).ToString();
                             if (sign.Equals("-"))
                             {
                                 positiveModifier = false;

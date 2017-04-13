@@ -1,4 +1,6 @@
 ﻿using System;
+using RoleplayBot.Util;
+using RoleplayBot.Bot;
 
 namespace RoleplayBot
 {
@@ -9,7 +11,7 @@ namespace RoleplayBot
             Console.WriteLine("Starting RoleplayBot...");
 
             //Creates a config file containing the Discord token
-            var config = new Config("config.conf");
+            var config = new Config("config");
             if(config.Get("Token") == null)
             {
                 Console.WriteLine("The config file does not contain the 'Token' key. Add a token to the config file to continue...");
@@ -19,7 +21,7 @@ namespace RoleplayBot
             }
             else
             {
-                var bot = new Bot(config.Get("Token"));
+                var bot = new DiscordBot(config.Get("Token"));
                 bot.Run();
             }
         }
