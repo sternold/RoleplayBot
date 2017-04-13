@@ -3,6 +3,7 @@ using System;
 using System.Text.RegularExpressions;
 using RoleplayBot.Character.Persistence;
 using RoleplayBot.Dice;
+using System.Threading.Tasks;
 
 namespace RoleplayBot.Bot
 {
@@ -32,14 +33,14 @@ namespace RoleplayBot.Bot
                 if (!eventargs.Message.IsAuthor)
                 {
                     Console.WriteLine("Recieved: " + eventargs.Message.Text);
-                    ParseQuery(eventargs);
+                    await ParseQuery(eventargs);
                 }
             };
 
             client.ExecuteAndWait(async () => await client.Connect(token, TokenType.Bot));
         }
 
-        public async void ParseQuery(MessageEventArgs eventargs)
+        public async Task<Message> ParseQuery(MessageEventArgs eventargs)
         {
             string[] args = eventargs.Message.Text.Split(' ');
 
@@ -47,14 +48,11 @@ namespace RoleplayBot.Bot
             {
                 case "!roll":
                     var roll = DiceRoller.GenerateRollString(args);
-                    await eventargs.Channel.SendMessage(roll);
-                    break;
+                    return await eventargs.Channel.SendMessage(roll);
                 case "!char":
-                    if (CharactersheetController.AddCharactersheet(args[1]))
-                    {
-                        await eventargs.Channel.SendMessage("Character " + args[1] + " created!");
-                    }
-                    break;
+                    return await eventargs.Channel.SendMessage("Character " + args[1] + ((CharactersheetController.AddCharactersheet(args[1])) ? " created!" : " could not be created"));
+                default:
+                    return null;                     
             }
         }
     }
