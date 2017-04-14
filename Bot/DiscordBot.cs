@@ -43,7 +43,10 @@ namespace RoleplayBot.Bot
         public async Task<Message> ParseQuery(MessageEventArgs eventargs)
         {
             string[] args = eventargs.Message.Text.Split(' ');
-
+            if(args.Length < 1)
+            {
+                return null;
+            }
             switch (args[0].ToLower())
             {
                 case "!roll":
