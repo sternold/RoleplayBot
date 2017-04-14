@@ -1,16 +1,27 @@
+using System.ComponentModel.DataAnnotations;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace RoleplayBot.Character.Models
 {
     public class Charactersheet
     {
+        [Key]
+        public int Id { get; set; }
+
         public string Name { get; set; }
-        private Dictionary<string, int> Attributes { get; set; }
+
+        public string Attributes { get; set; }
+
+        public Charactersheet()
+        {
+
+        }
 
         public Charactersheet(string name)
         {
 	        Name = name;
-            Attributes = new Dictionary<string, int>();
+            Attributes = JsonConvert.SerializeObject(new Dictionary<string, int>());
         }
 
 		/// <summary>
@@ -20,7 +31,12 @@ namespace RoleplayBot.Character.Models
 		/// <param name="value">Value of the attribute.</param>
         public void SetAttribute(string name, int value)
         {
-            Attributes.Add(name, value);
+            if(GetAttribute(name) != 0)
+            {
+                var dict = (Dictionary<string, int>)JsonConvert.DeserializeObject(Attributes);
+                dict.Add(name, value);
+                Attributes = JsonConvert.SerializeObject(dict);
+            }
         }
 
         /// <summary>
@@ -30,12 +46,10 @@ namespace RoleplayBot.Character.Models
         /// <returns>If the attribute exists, it's value. Otherwise, 0.</returns>
         public int GetAttribute(string name)
         {
-            int value = 0;
-            if(Attributes.TryGetValue(name, out value))
-            {
-                return value;
-            }
-            return 0;
+            int result = 0;
+            var dict = (Dictionary<string, int>)JsonConvert.DeserializeObject(Attributes);
+            dict.TryGetValue(name, out result);
+            return result;
         }
     }
 }

@@ -1,11 +1,9 @@
 using Discord;
 using System;
-using System.Text.RegularExpressions;
-using RoleplayBot.Character.Persistence;
 using RoleplayBot.Dice;
 using System.Threading.Tasks;
 using Discord.WebSocket;
-using Discord.Rest;
+using RoleplayBot.Character;
 
 namespace RoleplayBot.Bot
 {
@@ -56,7 +54,8 @@ namespace RoleplayBot.Bot
                     await message.Channel.SendMessageAsync(roll);
                     break;
                 case "!char":
-                    await message.Channel.SendMessageAsync("Character " + args[1] + ((CharactersheetController.AddCharactersheet(args[1])) ? " created!" : " could not be created"));
+                    CharactersheetRepository.CreateCharactersheet(new Character.Models.Charactersheet(args[1]));
+                    await message.Channel.SendMessageAsync(CharactersheetRepository.GetCharactersheetByName(args[1]).Name ?? "Could not save character.");
                     break;
             }
         }

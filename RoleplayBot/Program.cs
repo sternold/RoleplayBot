@@ -3,6 +3,7 @@ using RoleplayBot.Util;
 using RoleplayBot.Bot;
 using System.Threading.Tasks;
 using Discord;
+using RoleplayBot.Character;
 
 namespace RoleplayBot
 {
