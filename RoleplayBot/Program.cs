@@ -1,12 +1,17 @@
 ﻿using System;
 using RoleplayBot.Util;
 using RoleplayBot.Bot;
+using System.Threading.Tasks;
+using Discord;
 
 namespace RoleplayBot
 {
     public class Program
     {
         public static void Main(string[] args)
+            => new Program().MainAsync().GetAwaiter().GetResult();
+
+        public async Task MainAsync()
         {
             Console.WriteLine("Starting RoleplayBot...");
 
@@ -22,7 +27,7 @@ namespace RoleplayBot
             else
             {
                 var bot = new DiscordBot(config.Get("Token"));
-                bot.Run();
+                await bot.Run();
             }
         }
     }
