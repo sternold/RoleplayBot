@@ -1,5 +1,5 @@
-/bin
-/obj
+.vs
 .vscode
-project.lock.json
+[Bb]in/
+[Oo]bj/
 *.conf

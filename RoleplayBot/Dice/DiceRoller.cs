@@ -1,38 +1,19 @@
-using Discord;
 using System;
 using System.Text.RegularExpressions;
+using RoleplayBot.Character;
 
-namespace RoleplayBot
+namespace RoleplayBot.Dice
 {
-    public class Bot
+    public static class DiceRoller
     {
-        private DiscordClient client;
-        private string token = null;
-
-        public Bot(string token)
+        /// <summary>
+        /// Parses a "!roll" query.
+        /// </summary>
+        /// <param name="splitString">An unparsed message.</param>
+        /// <returns></returns>
+        public static string GenerateRollString(string[] splitString)
         {
-            this.token = token;
-        }
-
-        public void Run()
-        {
-            client = new DiscordClient();
-
-            client.MessageReceived += async (sender, eventargs) =>
-            {
-                if (!eventargs.Message.IsAuthor && eventargs.Message.Text.Split(' ')[0] == "!roll")
-                {
-                    String[] splitString = eventargs.Message.Text.Split(' ');
-                    await eventargs.Channel.SendMessage(executeRoll(splitString));
-                }
-            };
-
-            client.ExecuteAndWait(async () => await client.Connect(token, TokenType.Bot));
-        }
-
-        private String executeRoll(String[] splitString)
-        {
-            String message = "You rolled: ";
+            string message = "You rolled: ";
             if (splitString.Length == 1)
             {
                 message = message + new Random().Next(1, 21);
@@ -40,12 +21,12 @@ namespace RoleplayBot
             else if (splitString.Length > 1)
             {
                 Regex regex = new Regex("\\d+d\\d+");
-                String arguments = splitString[1].Trim();
+                string arguments = splitString[1].Trim();
                 Match match = regex.Match(arguments);
 
                 if (!match.Equals(Match.Empty))
                 {
-                    String substring = match.ToString();
+                    string substring = match.ToString();
                     int dice = Int32.Parse(new Regex("\\d+").Matches(substring)[0].ToString());
                     int capacity = Int32.Parse(new Regex("\\d+").Matches(substring)[1].ToString()) + 1;
 
@@ -55,19 +36,29 @@ namespace RoleplayBot
                     }
                     else
                     {
-                        regex = new Regex("(-|\\+)\\d+");
+                        regex = new Regex("(-|\\+)");
                         Match modifierMatch = regex.Match(arguments);
                         int modifier = 0;
                         bool positiveModifier = true;
 
                         if (!modifierMatch.Equals(Match.Empty))
                         {
-                            String sign = new Regex("(-|\\+)").Match(arguments).ToString();
+                            string sign = new Regex("(-|\\+)").Match(arguments).ToString();
                             if (sign.Equals("-"))
                             {
                                 positiveModifier = false;
                             }
-                            modifier = Int32.Parse(new Regex("\\d+").Matches(arguments)[2].ToString());
+	                        int value = 0;
+	                        if (!Int32.TryParse(arguments.Split('+', '-')[1], out value))
+	                        {
+		                        string[] trychar = arguments.Split('-', '+')[1].Split(':');
+		                        if (trychar.Length > 1)
+		                        {
+			                        value = CharactersheetRepository.GetCharactersheetByName(trychar[0]).GetAttribute(trychar[1]);
+		                        }
+
+	                        }
+	                        modifier = value;
                         }
                         if (!positiveModifier)
                         {
