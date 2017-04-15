@@ -1,35 +1,49 @@
 ﻿using System;
-using RoleplayBot.Util;
-using RoleplayBot.Bot;
 using System.Threading.Tasks;
-using Discord;
-using RoleplayBot.Character;
+using RoleplayBot.Bot;
+using RoleplayBot.Persistence;
+using RoleplayBot.Util;
 
 namespace RoleplayBot
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-            => new Program().MainAsync().GetAwaiter().GetResult();
+	public class Program
+	{
+		private Config _config;
+		private DiscordBot _bot;
 
-        public async Task MainAsync()
-        {
-            Console.WriteLine("Starting RoleplayBot...");
+		public static void Main(string[] args)
+			=> new Program().MainAsync().GetAwaiter().GetResult();
 
-            //Creates a config file containing the Discord token
-            var config = new Config("config");
-            if(config.Get("Token") == null)
-            {
-                Console.WriteLine("The config file does not contain the 'Token' key. Add a token to the config file to continue...");
-                config.Put("Token", string.Empty);
-                Console.ReadKey();
-                Environment.Exit(0);
-            }
-            else
-            {
-                var bot = new DiscordBot(config.Get("Token"));
-                await bot.Run();
-            }
-        }
-    }
+		private async Task MainAsync()
+		{
+			GenerateAssets();
+			try
+			{
+				_bot = new DiscordBot(_config.GetAsString("Token"));
+				await _bot.Run();
+			}
+			catch (Exception e)
+			{
+				Console.WriteLine(e.Message);
+			}
+			Console.ReadKey();
+		}
+
+		private void GenerateAssets()
+		{
+			_config = new Config("config");
+			if (_config.IsNew)
+			{
+				_config.Put("Token", string.Empty);
+				_config.Put("DeleteDatabaseOnRestart", true);
+			}
+
+			using (var db = new RoleplayContext())
+			{
+				if (_config.GetAsBoolean("DeleteDatabaseOnRestart"))
+					db.Database.EnsureDeleted();
+				db.Database.EnsureCreated();
+			}
+		}
+	}
 }

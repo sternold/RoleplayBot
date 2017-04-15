@@ -1,5 +1,6 @@
 using System;
 using System.Text.RegularExpressions;
+using RoleplayBot.Character;
 
 namespace RoleplayBot.Dice
 {
@@ -35,7 +36,7 @@ namespace RoleplayBot.Dice
                     }
                     else
                     {
-                        regex = new Regex("(-|\\+)\\d+");
+                        regex = new Regex("(-|\\+)");
                         Match modifierMatch = regex.Match(arguments);
                         int modifier = 0;
                         bool positiveModifier = true;
@@ -47,7 +48,17 @@ namespace RoleplayBot.Dice
                             {
                                 positiveModifier = false;
                             }
-                            modifier = Int32.Parse(new Regex("\\d+").Matches(arguments)[2].ToString());
+	                        int value = 0;
+	                        if (!Int32.TryParse(arguments.Split('+', '-')[1], out value))
+	                        {
+		                        string[] trychar = arguments.Split('-', '+')[1].Split(':');
+		                        if (trychar.Length > 1)
+		                        {
+			                        value = CharactersheetRepository.GetCharactersheetByName(trychar[0]).GetAttribute(trychar[1]);
+		                        }
+
+	                        }
+	                        modifier = value;
                         }
                         if (!positiveModifier)
                         {

@@ -9,8 +9,8 @@ namespace RoleplayBot.Bot
 {
     public class DiscordBot
     {
-        private DiscordSocketClient client;
-        private string token = null;
+        private DiscordSocketClient _client;
+	    private readonly string _token;
 
         /// <summary>
         /// RPB's main parsing class.
@@ -18,7 +18,7 @@ namespace RoleplayBot.Bot
         /// <param name="token">The token recieved from Discord</param>
         public DiscordBot(string token)
         {
-            this.token = token;
+            _token = token;
         }
 
         /// <summary>
@@ -26,10 +26,10 @@ namespace RoleplayBot.Bot
         /// </summary>
         public async Task Run()
         {
-            client = new DiscordSocketClient();
+            _client = new DiscordSocketClient();
 
-            client.Log += Log;
-            client.MessageReceived += async (message) =>
+            _client.Log += Log;
+            _client.MessageReceived += async (message) =>
             {
                 if (!message.Author.IsBot)
                 {
@@ -38,8 +38,8 @@ namespace RoleplayBot.Bot
                 }
             };
 
-            await client.LoginAsync(TokenType.Bot, token);
-            await client.StartAsync();
+            await _client.LoginAsync(TokenType.Bot, _token);
+            await _client.StartAsync();
 
             await Task.Delay(-1);
         }
@@ -47,17 +47,42 @@ namespace RoleplayBot.Bot
         public async Task ParseQuery(SocketMessage message)
         {
             string[] args = message.Content.Split(' ');
-            switch (args[0].ToLower())
-            {
-                case "!roll":
-                    var roll = DiceRoller.GenerateRollString(args);
-                    await message.Channel.SendMessageAsync(roll);
-                    break;
-                case "!char":
-                    CharactersheetRepository.CreateCharactersheet(new Character.Models.Charactersheet(args[1]));
-                    await message.Channel.SendMessageAsync(CharactersheetRepository.GetCharactersheetByName(args[1]).Name ?? "Could not save character.");
-                    break;
-            }
+	        try
+	        {
+		        switch (args[0].ToLower())
+		        {
+			        case "!roll":
+				        var roll = DiceRoller.GenerateRollString(args);
+				        await message.Channel.SendMessageAsync(roll);
+				        break;
+			        case "!char":
+				        var query = args[1].Split(':');
+				        if (query.Length > 1)
+				        {					        
+							var action = query[1].Split('=');
+							var character = CharactersheetRepository.GetCharactersheetByName(query[0]);
+							if (action.Length > 1)
+					        {
+						        character.SetAttribute(action[0], Convert.ToInt32(action[1]));
+					        }
+							CharactersheetRepository.UpdateCharactersheet(character);
+							await message.Channel.SendMessageAsync("The value of " + action[0] + " is " + CharactersheetRepository.GetCharactersheetByName(query[0])
+								.GetAttribute(action[0]));
+				        }
+				        else
+				        {
+					        CharactersheetRepository.CreateCharactersheet(new Character.Models.Charactersheet(args[1]));
+					        await message.Channel.SendMessageAsync(CharactersheetRepository.GetCharactersheetByName(args[1]).Name + " exists!" ??
+					                                               "Could not save character.");
+				        }
+				        break;
+		        }
+	        }
+	        catch (Exception e)
+	        {
+		        await Log(new LogMessage(LogSeverity.Error, "Bot", e.Message));
+		        await message.Channel.SendMessageAsync(e.Message);
+	        }		
         }
 
         private Task Log(LogMessage msg)

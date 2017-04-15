@@ -9,17 +9,23 @@ namespace RoleplayBot.Character
 {
     public static class CharactersheetRepository
     {
-        private static RoleplayContext db = new RoleplayContext();
+        private static readonly RoleplayContext Db = new RoleplayContext();
 
         public static void CreateCharactersheet(Charactersheet entity)
         {
-            db.Charactersheets.Add(entity);
-            db.SaveChanges();
+            Db.Charactersheets.Add(entity);
+            Db.SaveChanges();
         }
+
+	    public static void UpdateCharactersheet(Charactersheet entity)
+	    {
+		    Db.Charactersheets.Update(entity);
+		    Db.SaveChanges();
+	    }
 
         public static Charactersheet GetCharactersheetByName(string name)
         {
-            return db.Charactersheets.Where(y => y.Name == name).FirstOrDefault();
+            return Db.Charactersheets.FirstOrDefault(y => y.Name == name);
         }
     }
 }
